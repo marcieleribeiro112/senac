@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Funcionário Nota 10</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#07152e,#123b75,#0b6fa4);
+    color:white;
+}
+
+button{
+    cursor:pointer;
+    border:none;
+}
+
+.tela{
+    display:none;
+    min-height:100vh;
+    padding:30px 20px;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.tela.ativa{
+    display:flex;
+}
+
+.container{
+    width:100%;
+    max-width:1000px;
+}
+
+h1{
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+h2{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+h3{
+    margin-bottom:15px;
+}
+
+p{
+    font-size:18px;
+    line-height:1.6;
+}
+
+.btn{
+    background:#ffd21c;
+    color:#111827;
+    padding:15px 28px;
+    border-radius:14px;
+    font-size:18px;
+    font-weight:bold;
+    margin:8px;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+.avatar-principal{
+    font-size:100px;
+    margin-bottom:15px;
+}
+
+.pontuacao{
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:100;
+    background:#ffd21c;
+    color:#111827;
+    padding:12px 20px;
+    border-radius:30px;
+    font-weight:bold;
+}
+
+.avatares{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin:30px 0;
+}
+
+.avatar{
+    background:white;
+    color:#111827;
+    padding:25px;
+    border-radius:20px;
+    transition:.2s;
+}
+
+.avatar:hover{
+    transform:translateY(-5px);
+}
+
+.avatar.selecionado{
+    outline:5px solid #ffd21c;
+}
+
+.avatar .emoji{
+    font-size:60px;
+    display:block;
+    margin-bottom:10px;
+}
+
+.menu{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    margin:30px 0;
+}
+
+.card{
+    background:rgba(255,255,255,.12);
+    padding:15px;
+    border-radius:20px;
+    backdrop-filter:blur(8px);
+}
+
+.card button{
+    width:100%;
+    padding:25px;
+    border-radius:15px;
+    font-size:18px;
+    font-weight:bold;
+    background:white;
+    color:#111827;
+}
+
+.icone{
+    display:block;
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.fala{
+    background:white;
+    color:#111827;
+    padding:20px;
+    border-radius:18px;
+    margin:20px auto;
+    max-width:750px;
+    font-size:18px;
+}
+
+.opcoes{
+    display:grid;
+    gap:12px;
+    margin:25px auto;
+    max-width:750px;
+}
+
+.opcao{
+    background:white;
+    color:#111827;
+    padding:18px;
+    border-radius:12px;
+    text-align:left;
+    font-size:17px;
+}
+
+.opcao:hover{
+    background:#ffd21c;
+}
+
+.feedback{
+    display:none;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,.15);
+    margin:20px;
+}
+
+.progresso{
+    width:100%;
+    height:14px;
+    background:rgba(255,255,255,.2);
+    border-radius:20px;
+    overflow:hidden;
+    margin:20px 0;
+}
+
+.barra{
+    width:0%;
+    height:100%;
+    background:#ffd21c;
+    transition:.5s;
+}
+
+/* =========================
+   VÍDEOS
+========================= */
+
+.video-box{
+    background:rgba(255,255,255,.12);
+    padding:25px;
+    border-radius:22px;
+    margin:25px 0;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.video{
+    position:relative;
+    width:100%;
+    max-width:800px;
+    height:380px;
+    margin:20px auto;
+    overflow:hidden;
+    border-radius:20px;
+    background:linear-gradient(135deg,#111827,#243b64);
+    border:3px solid rgba(255,255,255,.2);
+}
+
+/* cenário */
+
+.cenario{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+}
+
+.chao{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:80px;
+    background:#263238;
+}
+
+.personagem{
+    position:absolute;
+    bottom:75px;
+    font-size:80px;
+    transition:all 1s ease;
+}
+
+.personagem.um{
+    left:15%;
+}
+
+.personagem.dois{
+    right:15%;
+}
+
+.fala-video{
+    position:absolute;
+    top:25px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    background:white;
+    color:#111827;
+    padding:15px;
+    border-radius:15px;
+    font-weight:bold;
+    opacity:0;
+    transition:.5s;
+}
+
+.fala-video.mostrar{
+    opacity:1;
+}
+
+.titulo-video{
+    position:absolute;
+    top:130px;
+    width:100%;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.video-controles{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.controle{
+    background:#ffd21c;
+    color:#111827;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.tempo{
+    margin-top:12px;
+}
+
+.video-concluido{
+    display:none;
+    background:#16a34a;
+    padding:12px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+/* QUIZ */
+
+.quiz{
+    background:rgba(255,255,255,.12);
+    padding:25px;
+    border-radius:20px;
+    margin:20px 0;
+}
+
+.quiz button{
+    display:block;
+    width:100%;
+    background:white;
+    color:#111827;
+    padding:15px;
+    margin:10px 0;
+    border-radius:12px;
+    font-size:16px;
+}
+
+.quiz button:hover{
+    background:#ffd21c;
+}
+
+/* CHECKLIST */
+
+.checklist{
+    text-align:left;
+    background:rgba(255,255,255,.12);
+    padding:25px;
+    border-radius:20px;
+}
+
+.check-item{
+    padding:15px;
+    margin:8px 0;
+    background:white;
+    color:#111827;
+    border-radius:12px;
+}
+
+.check-item input{
+    margin-right:10px;
+    transform:scale(1.3);
+}
+
+/* CERTIFICADO */
+
+.certificado{
+    background:white;
+    color:#111827;
+    padding:50px;
+    border-radius:20px;
+    max-width:750px;
+    margin:auto;
+    border:10px solid #ffd21c;
+}
+
+.certificado h1{
+    font-size:40px;
+}
+
+input{
+    padding:15px;
+    width:90%;
+    max-width:400px;
+    border:none;
+    border-radius:10px;
+    margin:15px;
+    font-size:17px;
+}
+
+/* ANIMAÇÕES */
+
+@keyframes andarDireita{
+    from{left:10%}
+    to{left:70%}
+}
+
+@keyframes andarEsquerda{
+    from{right:10%}
+    to{right:70%}
+}
+
+@keyframes pular{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-40px)}
+}
+
+.pular{
+    animation:pular .7s infinite;
+}
+
+.andar{
+    animation:andarDireita 4s linear forwards;
+}
+
+.andar2{
+    animation:andarEsquerda 4s linear forwards;
+}
+
+@media(max-width:700px){
+
+    h1{
+        font-size:35px;
+    }
+
+    h2{
+        font-size:27px;
+    }
+
+    .avatares{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .menu{
+        grid-template-columns:1fr;
+    }
+
+    .video{
+        height:300px;
+    }
+
+    .personagem{
+        font-size:60px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="pontuacao" id="pontuacao">
+⭐ Pontos: 0
+</div>
+
+
+<!-- =========================
+     INÍCIO
+========================= -->
+
+<section class="tela ativa" id="inicio">
+
+<div class="container">
+
+<div class="avatar-principal">👨‍💼</div>
+
+<h1>
+FUNCIONÁRIO<br>
+NOTA 10
+</h1>
+
+<p>
+Um manual digital interativo para aprender
+como ser um excelente profissional.
+</p>
+
+<br>
+
+<button class="btn" onclick="mostrarTela('avatarTela')">
+🚀 COMEÇAR
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     AVATAR
+========================= -->
+
+<section class="tela" id="avatarTela">
+
+<div class="container">
+
+<h2>👤 Escolha seu avatar</h2>
+
+<p>
+Escolha o personagem que acompanhará você.
+</p>
+
+<div class="avatares">
+
+<div class="avatar" onclick="escolherAvatar(this,'👩‍💼')">
+<span class="emoji">👩‍💼</span>
+Profissional
+</div>
+
+<div class="avatar" onclick="escolherAvatar(this,'👨‍💻')">
+<span class="emoji">👨‍💻</span>
+Tecnológico
+</div>
+
+<div class="avatar" onclick="escolherAvatar(this,'👩‍🔧')">
+<span class="emoji">👩‍🔧</span>
+Prático
+</div>
+
+<div class="avatar" onclick="escolherAvatar(this,'👨‍🏫')">
+<span class="emoji">👨‍🏫</span>
+Mentor
+</div>
+
+<div class="avatar" onclick="escolherAvatar(this,'👩‍💻')">
+<span class="emoji">👩‍💻</span>
+Criativo
+</div>
+
+<div class="avatar" onclick="escolherAvatar(this,'👨‍💼')">
+<span class="emoji">👨‍💼</span>
+Líder
+</div>
+
+</div>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+CONTINUAR ➜
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     MENU
+========================= -->
+
+<section class="tela" id="menuTela">
+
+<div class="container">
+
+<div class="avatar-principal" id="avatarMenu">
+👨‍💼
+</div>
+
+<h2>📚 Manual Interativo</h2>
+
+<div class="fala">
+Olá! Vamos aprender juntos o que faz um verdadeiro
+Funcionário Nota 10!
+</div>
+
+<div class="menu">
+
+<div class="card">
+<button onclick="abrirModulo(
+'📢 Comunicação',
+'Saber ouvir, falar com respeito e transmitir informações de maneira clara são atitudes essenciais no trabalho.'
+)">
+<span class="icone">📢</span>
+Comunicação
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'⏰ Pontualidade',
+'Chegar no horário demonstra responsabilidade e respeito com a equipe e com a empresa.'
+)">
+<span class="icone">⏰</span>
+Pontualidade
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'🤝 Trabalho em equipe',
+'Cooperar, ajudar os colegas e respeitar diferentes opiniões fortalece o trabalho em equipe.'
+)">
+<span class="icone">🤝</span>
+Trabalho em equipe
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'📋 Organização',
+'Organizar tarefas, materiais e horários ajuda a evitar erros e aumenta a produtividade.'
+)">
+<span class="icone">📋</span>
+Organização
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'🦺 Segurança',
+'Seguir as normas de segurança protege você e seus colegas no ambiente de trabalho.'
+)">
+<span class="icone">🦺</span>
+Segurança
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'😊 Atendimento',
+'Tratar as pessoas com educação, respeito e atenção é fundamental para um bom atendimento.'
+)">
+<span class="icone">😊</span>
+Atendimento
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'🎯 Responsabilidade',
+'Cumprir suas tarefas e assumir responsabilidade pelas suas atitudes demonstra profissionalismo.'
+)">
+<span class="icone">🎯</span>
+Responsabilidade
+</button>
+</div>
+
+<div class="card">
+<button onclick="abrirModulo(
+'💻 Tecnologia',
+'Utilizar a tecnologia corretamente pode facilitar tarefas e melhorar os resultados.'
+)">
+<span class="icone">💻</span>
+Tecnologia
+</button>
+</div>
+
+</div>
+
+<button class="btn" onclick="mostrarTela('situacaoTela')">
+🎮 SITUAÇÃO INTERATIVA
+</button>
+
+<button class="btn" onclick="mostrarTela('videosTela')">
+🎬 VÍDEOS COM IA
+</button>
+
+<button class="btn" onclick="mostrarTela('quizTela')">
+🧠 QUIZ
+</button>
+
+<button class="btn" onclick="mostrarTela('checklistTela')">
+✅ CHECKLIST
+</button>
+
+<button class="btn" onclick="mostrarTela('certificadoTela')">
+🏆 CERTIFICADO
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     MÓDULO
+========================= -->
+
+<section class="tela" id="moduloTela">
+
+<div class="container">
+
+<div class="avatar-principal" id="avatarModulo">
+👨‍💼
+</div>
+
+<h2 id="moduloTitulo"></h2>
+
+<div class="fala" id="moduloTexto"></div>
+
+<button class="btn" onclick="ganharPontos(5)">
+⭐ CONCLUIR MÓDULO
+</button>
+
+<br>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     SITUAÇÃO
+========================= -->
+
+<section class="tela" id="situacaoTela">
+
+<div class="container">
+
+<h2>🎮 Situação de Trabalho</h2>
+
+<p>
+Você percebeu que seu colega está com dificuldade
+para terminar uma tarefa.
+</p>
+
+<div class="fala">
+O que você faria?
+</div>
+
+<div class="opcoes">
+
+<button class="opcao" onclick="responder(false)">
+A) Ignorar porque não é sua responsabilidade.
+</button>
+
+<button class="opcao" onclick="responder(true)">
+B) Perguntar se ele precisa de ajuda.
+</button>
+
+<button class="opcao" onclick="responder(false)">
+C) Reclamar com outro colega.
+</button>
+
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     VÍDEOS
+========================= -->
+
+<section class="tela" id="videosTela">
+
+<div class="container">
+
+<h2>🎬 VÍDEOS EDUCATIVOS</h2>
+
+<p>
+Assista às animações e aprenda na prática!
+</p>
+
+
+<!-- VÍDEO 1 -->
+
+<div class="video-box">
+
+<h3>📢 Comunicação</h3>
+
+<div class="video" id="video1">
+
+<div class="cenario">
+
+<div class="chao"></div>
+
+<div class="personagem um" id="p1a">👩‍💼</div>
+
+<div class="personagem dois" id="p1b">👨‍💼</div>
+
+<div class="fala-video" id="fala1">
+Olá! Você entendeu a tarefa?
+</div>
+
+<div class="titulo-video">
+📢 COMUNICAÇÃO
+</div>
+
+</div>
+
+</div>
+
+<div class="video-controles">
+
+<button class="controle" onclick="iniciarVideo(1)">
+▶ PLAY
+</button>
+
+<button class="controle" onclick="pausarVideo(1)">
+⏸ PAUSAR
+</button>
+
+<button class="controle" onclick="reiniciarVideo(1)">
+🔄 REINICIAR
+</button>
+
+</div>
+
+<div class="tempo">
+Tempo: <span id="tempo1">0</span> / 20 segundos
+</div>
+
+<div class="video-concluido" id="concluido1">
+✅ Vídeo concluído! +10 pontos
+</div>
+
+</div>
+
+
+<!-- VÍDEO 2 -->
+
+<div class="video-box">
+
+<h3>🤝 Trabalho em equipe</h3>
+
+<div class="video">
+
+<div class="cenario">
+
+<div class="chao"></div>
+
+<div class="personagem um" id="p2a">
+👨‍💻
+</div>
+
+<div class="personagem dois" id="p2b">
+👩‍💼
+</div>
+
+<div class="fala-video" id="fala2">
+Precisa de ajuda?
+</div>
+
+<div class="titulo-video">
+🤝 TRABALHO EM EQUIPE
+</div>
+
+</div>
+
+</div>
+
+<div class="video-controles">
+
+<button class="controle" onclick="iniciarVideo(2)">
+▶ PLAY
+</button>
+
+<button class="controle" onclick="pausarVideo(2)">
+⏸ PAUSAR
+</button>
+
+<button class="controle" onclick="reiniciarVideo(2)">
+🔄 REINICIAR
+</button>
+
+</div>
+
+<div class="tempo">
+Tempo: <span id="tempo2">0</span> / 20 segundos
+</div>
+
+<div class="video-concluido" id="concluido2">
+✅ Vídeo concluído! +10 pontos
+</div>
+
+</div>
+
+
+<!-- VÍDEO 3 -->
+
+<div class="video-box">
+
+<h3>🦺 Segurança</h3>
+
+<div class="video">
+
+<div class="cenario">
+
+<div class="chao"></div>
+
+<div class="personagem um" id="p3a">
+👷
+</div>
+
+<div class="fala-video" id="fala3">
+Lembre-se sempre das regras de segurança!
+</div>
+
+<div class="titulo-video">
+🦺 SEGURANÇA
+</div>
+
+</div>
+
+</div>
+
+<div class="video-controles">
+
+<button class="controle" onclick="iniciarVideo(3)">
+▶ PLAY
+</button>
+
+<button class="controle" onclick="pausarVideo(3)">
+⏸ PAUSAR
+</button>
+
+<button class="controle" onclick="reiniciarVideo(3)">
+🔄 REINICIAR
+</button>
+
+</div>
+
+<div class="tempo">
+Tempo: <span id="tempo3">0</span> / 20 segundos
+</div>
+
+<div class="video-concluido" id="concluido3">
+✅ Vídeo concluído! +10 pontos
+</div>
+
+</div>
+
+
+<!-- VÍDEO 4 -->
+
+<div class="video-box">
+
+<h3>😊 Atendimento</h3>
+
+<div class="video">
+
+<div class="cenario">
+
+<div class="chao"></div>
+
+<div class="personagem um" id="p4a">
+👩‍💼
+</div>
+
+<div class="personagem dois" id="p4b">
+🧑
+</div>
+
+<div class="fala-video" id="fala4">
+Olá! Como posso ajudar?
+</div>
+
+<div class="titulo-video">
+😊 ATENDIMENTO
+</div>
+
+</div>
+
+</div>
+
+<div class="video-controles">
+
+<button class="controle" onclick="iniciarVideo(4)">
+▶ PLAY
+</button>
+
+<button class="controle" onclick="pausarVideo(4)">
+⏸ PAUSAR
+</button>
+
+<button class="controle" onclick="reiniciarVideo(4)">
+🔄 REINICIAR
+</button>
+
+</div>
+
+<div class="tempo">
+Tempo: <span id="tempo4">0</span> / 20 segundos
+</div>
+
+<div class="video-concluido" id="concluido4">
+✅ Vídeo concluído! +10 pontos
+</div>
+
+</div>
+
+
+<!-- VÍDEO 5 -->
+
+<div class="video-box">
+
+<h3>⏰ Pontualidade</h3>
+
+<div class="video">
+
+<div class="cenario">
+
+<div class="chao"></div>
+
+<div class="personagem um" id="p5a">
+👨‍💼
+</div>
+
+<div class="fala-video" id="fala5">
+Chegar no horário demonstra responsabilidade!
+</div>
+
+<div class="titulo-video">
+⏰ PONTUALIDADE
+</div>
+
+</div>
+
+</div>
+
+<div class="video-controles">
+
+<button class="controle" onclick="iniciarVideo(5)">
+▶ PLAY
+</button>
+
+<button class="controle" onclick="pausarVideo(5)">
+⏸ PAUSAR
+</button>
+
+<button class="controle" onclick="reiniciarVideo(5)">
+🔄 REINICIAR
+</button>
+
+</div>
+
+<div class="tempo">
+Tempo: <span id="tempo5">0</span> / 20 segundos
+</div>
+
+<div class="video-concluido" id="concluido5">
+✅ Vídeo concluído! +10 pontos
+</div>
+
+</div>
+
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR AO MENU
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     QUIZ
+========================= -->
+
+<section class="tela" id="quizTela">
+
+<div class="container">
+
+<h2>🧠 QUIZ FUNCIONÁRIO NOTA 10</h2>
+
+<div class="quiz">
+
+<h3>1. O que demonstra pontualidade?</h3>
+
+<button onclick="quizResposta(true,this)">
+A) Chegar no horário combinado
+</button>
+
+<button onclick="quizResposta(false,this)">
+B) Chegar quando quiser
+</button>
+
+<button onclick="quizResposta(false,this)">
+C) Faltar sem avisar
+</button>
+
+</div>
+
+<div class="quiz">
+
+<h3>2. O que é importante no trabalho em equipe?</h3>
+
+<button onclick="quizResposta(true,this)">
+A) Cooperar com os colegas
+</button>
+
+<button onclick="quizResposta(false,this)">
+B) Ignorar os colegas
+</button>
+
+<button onclick="quizResposta(false,this)">
+C) Nunca ajudar ninguém
+</button>
+
+</div>
+
+<div class="quiz">
+
+<h3>3. Uma boa comunicação deve ser:</h3>
+
+<button onclick="quizResposta(true,this)">
+A) Clara e respeitosa
+</button>
+
+<button onclick="quizResposta(false,this)">
+B) Confusa
+</button>
+
+<button onclick="quizResposta(false,this)">
+C) Agressiva
+</button>
+
+</div>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CHECKLIST
+========================= -->
+
+<section class="tela" id="checklistTela">
+
+<div class="container">
+
+<h2>✅ CHECKLIST</h2>
+
+<div class="checklist">
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre comunicação
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre pontualidade
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre trabalho em equipe
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre organização
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre segurança
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre atendimento
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre responsabilidade
+</label>
+
+<label class="check-item">
+<input type="checkbox" onchange="checklist()">
+Aprendi sobre tecnologia
+</label>
+
+</div>
+
+<div class="progresso">
+<div class="barra" id="barraChecklist"></div>
+</div>
+
+<p id="porcentagem">
+0% concluído
+</p>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CERTIFICADO
+========================= -->
+
+<section class="tela" id="certificadoTela">
+
+<div class="container">
+
+<div class="certificado">
+
+<h1>🏆</h1>
+
+<h2>FUNCIONÁRIO NOTA 10</h2>
+
+<p>
+Certificamos que
+</p>
+
+<input
+type="text"
+id="nomeCertificado"
+placeholder="Digite seu nome"
+>
+
+<p>
+concluiu o manual digital interativo
+<strong>Funcionário Nota 10</strong>.
+</p>
+
+<br>
+
+<p>
+⭐ Pontuação:
+<strong id="pontosCertificado">0</strong>
+</p>
+
+<br>
+
+<p>
+Parabéns pela participação!
+</p>
+
+</div>
+
+<br>
+
+<button class="btn" onclick="atualizarCertificado()">
+🏆 ATUALIZAR CERTIFICADO
+</button>
+
+<button class="btn" onclick="window.print()">
+🖨️ IMPRIMIR
+</button>
+
+<button class="btn" onclick="mostrarTela('menuTela')">
+⬅ VOLTAR
+</button>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* =========================
+   SISTEMA
+========================= */
+
+let pontos = 0;
+
+let avatarEscolhido = "👨‍💼";
+
+let videos = {};
+
+
+/* =========================
+   TELAS
+========================= */
+
+function mostrarTela(id){
+
+    document.querySelectorAll(".tela").forEach(tela=>{
+        tela.classList.remove("ativa");
+    });
+
+    document.getElementById(id).classList.add("ativa");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================
+   AVATAR
+========================= */
+
+function escolherAvatar(elemento,avatar){
+
+    document.querySelectorAll(".avatar").forEach(item=>{
+        item.classList.remove("selecionado");
+    });
+
+    elemento.classList.add("selecionado");
+
+    avatarEscolhido=avatar;
+
+    document.getElementById("avatarMenu").innerText=avatar;
+
+    document.getElementById("avatarModulo").innerText=avatar;
+
+}
+
+
+/* =========================
+   MÓDULOS
+========================= */
+
+function abrirModulo(titulo,texto){
+
+    document.getElementById("moduloTitulo").innerText=titulo;
+
+    document.getElementById("moduloTexto").innerText=texto;
+
+    document.getElementById("avatarModulo").innerText=avatarEscolhido;
+
+    mostrarTela("moduloTela");
+
+}
+
+
+function ganharPontos(valor){
+
+    pontos+=valor;
+
+    atualizarPontos();
+
+    alert("⭐ Você ganhou "+valor+" pontos!");
+
+}
+
+
+function atualizarPontos(){
+
+    document.getElementById("pontuacao").innerText=
+    "⭐ Pontos: "+pontos;
+
+}
+
+
+/* =========================
+   SITUAÇÃO
+========================= */
+
+function responder(correto){
+
+    const feedback=
+    document.getElementById("feedback");
+
+    feedback.style.display="block";
+
+    if(correto){
+
+        pontos+=10;
+
+        feedback.innerHTML=
+        "✅ Excelente escolha! Ajudar um colega demonstra colaboração e trabalho em equipe.";
+
+    }else{
+
+        feedback.innerHTML=
+        "❌ Essa atitude pode prejudicar o trabalho em equipe. Procure agir com respeito e colaboração.";
+
+    }
+
+    atualizarPontos();
+
+}
+
+
+/* =========================
+   VÍDEOS ANIMADOS
+========================= */
+
+function iniciarVideo(numero){
+
+    if(videos[numero]){
+        clearInterval(videos[numero]);
+    }
+
+    let tempo=0;
+
+    document.getElementById("tempo"+numero).innerText=0;
+
+    document.getElementById("concluido"+numero).style.display="none";
+
+    const fala=
+    document.getElementById("fala"+numero);
+
+    if(fala){
+        fala.classList.add("mostrar");
+    }
+
+    const personagem=
+    document.getElementById("p"+numero+"a");
+
+    if(personagem){
+        personagem.classList.add("andar");
+    }
+
+    videos[numero]=setInterval(()=>{
+
+        tempo++;
+
+        document.getElementById("tempo"+numero).innerText=tempo;
+
+        /* mudanças de fala */
+
+        if(numero===1){
+
+            if(tempo<7){
+                fala.innerText="Olá! Você entendeu a tarefa?";
+            }
+            else if(tempo<14){
+                fala.innerText="Sim! Mas tenho uma dúvida.";
+            }
+            else{
+                fala.innerText="Claro! Vamos conversar.";
+            }
+
+        }
+
+        if(numero===2){
+
+            if(tempo<7){
+                fala.innerText="Estou com dificuldade.";
+            }
+            else if(tempo<14){
+                fala.innerText="Precisa de ajuda?";
+            }
+            else{
+                fala.innerText="Obrigado! Vamos fazer juntos.";
+            }
+
+        }
+
+        if(numero===3){
+
+            if(tempo<7){
+                fala.innerText="Antes de começar...";
+            }
+            else if(tempo<14){
+                fala.innerText="Precisamos seguir as regras de segurança.";
+            }
+            else{
+                fala.innerText="Segurança é responsabilidade de todos!";
+            }
+
+        }
+
+        if(numero===4){
+
+            if(tempo<7){
+                fala.innerText="Olá! Como posso ajudar?";
+            }
+            else if(tempo<14){
+                fala.innerText="Gostaria de tirar uma dúvida.";
+            }
+            else{
+                fala.innerText="Claro! Vou ajudar você.";
+            }
+
+        }
+
+        if(numero===5){
+
+            if(tempo<7){
+                fala.innerText="O horário está chegando.";
+            }
+            else if(tempo<14){
+                fala.innerText="Já estou preparado.";
+            }
+            else{
+                fala.innerText="Ser pontual demonstra responsabilidade!";
+            }
+
+        }
+
+
+        if(tempo>=20){
+
+            clearInterval(videos[numero]);
+
+            document.getElementById("concluido"+numero)
+            .style.display="block";
+
+            ganharPontos(10);
+
+        }
+
+    },1000);
+
+}
+
+
+function pausarVideo(numero){
+
+    if(videos[numero]){
+
+        clearInterval(videos[numero]);
+
+        const fala=
+        document.getElementById("fala"+numero);
+
+        if(fala){
+            fala.classList.remove("mostrar");
+        }
+
+    }
+
+}
+
+
+function reiniciarVideo(numero){
+
+    pausarVideo(numero);
+
+    document.getElementById("tempo"+numero).innerText=0;
+
+    document.getElementById("concluido"+numero)
+    .style.display="none";
+
+    const personagem=
+    document.getElementById("p"+numero+"a");
+
+    if(personagem){
+
+        personagem.classList.remove("andar");
+
+        void personagem.offsetWidth;
+
+    }
+
+    const fala=
+    document.getElementById("fala"+numero);
+
+    if(fala){
+        fala.classList.remove("mostrar");
+    }
+
+}
+
+
+/* =========================
+   QUIZ
+========================= */
+
+function quizResposta(correta,botao){
+
+    if(botao.dataset.respondido){
+        return;
+    }
+
+    botao.dataset.respondido="true";
+
+    if(correta){
+
+        botao.style.background="#22c55e";
+
+        botao.style.color="white";
+
+        pontos+=10;
+
+        atualizarPontos();
+
+        alert("✅ Resposta correta! +10 pontos");
+
+    }else{
+
+        botao.style.background="#ef4444";
+
+        botao.style.color="white";
+
+        alert("❌ Resposta incorreta.");
+
+    }
+
+}
+
+
+/* =========================
+   CHECKLIST
+========================= */
+
+function checklist(){
+
+    const caixas=
+    document.querySelectorAll(
+        '.check-item input'
+    );
+
+    let marcados=0;
+
+    caixas.forEach(caixa=>{
+
+        if(caixa.checked){
+            marcados++;
+        }
+
+    });
+
+    const porcentagem=
+    Math.round((marcados/caixas.length)*100);
+
+    document.getElementById("barraChecklist")
+    .style.width=porcentagem+"%";
+
+    document.getElementById("porcentagem")
+    .innerText=porcentagem+"% concluído";
+
+}
+
+
+/* =========================
+   CERTIFICADO
+========================= */
+
+function atualizarCertificado(){
+
+    document.getElementById("pontosCertificado")
+    .innerText=pontos;
+
+    alert("🏆 Certificado atualizado!");
+
+}
+
+
+/* =========================
+   LOCAL STORAGE
+========================= */
+
+window.onload=function(){
+
+    const pontosSalvos=
+    localStorage.getItem("funcionarioPontos");
+
+    if(pontosSalvos){
+
+        pontos=parseInt(pontosSalvos);
+
+        atualizarPontos();
+
+    }
+
+};
+
+
+window.onbeforeunload=function(){
+
+    localStorage.setItem(
+        "funcionarioPontos",
+        pontos
+    );
+
+};
+
+</script>
+
+</body>
+</html>
